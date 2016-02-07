@@ -1,4 +1,5 @@
 class TweetsController < ApplicationController
+
   # display all tweets with given word
   def index
   end
