@@ -15,10 +15,42 @@ class Tweet < ActiveRecord::Base
   def make_sample_stream_request
     statuses = []
     TweetStream::Client.new.sample do |status, client|
+      # filter language, English only
+      client.filter(:lang => "en")
       statuses << status
       client.stop if statuses.size >= 20
     end
     return statuses
+  end
+
+  # takes array of tweet texts and filter according to standard
+  def filter_tweet(tweets)
+    filtered_tweets = []
+
+    tweets.each do |tweet|
+      filter_lang(tweet)
+      # filter_stopwords(tweet)
+      filtered_tweets << tweet
+    end
+
+    return filtered_tweets
+  end
+
+  # collect words and keep track of frequency
+  def map_word
+  end
+
+
+  private
+  def filter_lang(tweet)
+    tweet.text.split(" ").each do |word|
+      # remove @
+      word.gsub!(/[@]/, "")
+    end
+  end
+
+  def filter_stopwords(tweet)
+    #and, the, me, this, that, these, a, an, you, he, she, they, them, are, is, him, his, her, their, them, its, it, mine, us, my, your, theirs, yours, at, in, to, from, on
   end
 
   # stream
