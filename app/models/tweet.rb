@@ -12,11 +12,13 @@ class Tweet < ActiveRecord::Base
     end
   end
 
-  def make_userstream_request
-    TweetStream::Client.new.sample do |status|
-
-      # puts "#{status.text}"
+  def make_sample_stream_request
+    statuses = []
+    TweetStream::Client.new.sample do |status, client|
+      statuses << status
+      client.stop if statuses.size >= 20
     end
+    return statuses
   end
 
   # stream

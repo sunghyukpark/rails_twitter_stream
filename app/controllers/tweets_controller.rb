@@ -6,7 +6,7 @@ class TweetsController < ApplicationController
   def index
     tweet = Tweet.new
     tweet.configure
-    tweet.make_userstream_request
+    @statuses = tweet.make_sample_stream_request
   end
 
   # create instances of tweets while streaming
