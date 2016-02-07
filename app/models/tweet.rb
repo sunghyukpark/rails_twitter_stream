@@ -12,8 +12,11 @@ class Tweet < ActiveRecord::Base
     end
   end
 
-  def make_stream_request
+  def make_userstream_request
+    TweetStream::Client.new.sample do |status|
 
+      # puts "#{status.text}"
+    end
   end
 
   # stream
