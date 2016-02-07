@@ -8,9 +8,9 @@ class TweetsController < ApplicationController
     tweet.configure
 
     # unfiltered statuses (should filter lang(en-only), unnecessary words)
-    uf_statuses = tweet.make_sample_stream_request
-    @statuses = tweet.filter_tweet(uf_statuses)
+    uf_tweets = tweet.make_sample_stream_request
 
+    @tweet_words = tweet.filter_tweet(uf_tweets)
   end
 
   # create instances of tweets while streaming
