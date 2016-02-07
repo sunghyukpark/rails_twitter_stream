@@ -2,6 +2,8 @@ require 'tweetstream'
 
 class Tweet < ActiveRecord::Base
 
+  STOP_WORDS_LIST = ["i", "and", "the", "me", "this", "that", "these", "a", "an", "you", "he", "she", "they", "them", "are", "is", "him", "his", "her", "their", "them", "its", "it", "mine", "our", "us", "my", "your", "theirs", "yours", "at", "in", "to", "from","when", "where", "why", "what", "on", "will","than","un", "rt", "en","la", "los","las", "de" ,"del", "una", "con", "que"]
+
   # configure request tokens
 
   def configure
@@ -29,17 +31,18 @@ class Tweet < ActiveRecord::Base
 
 
   # filter tweet
-  #    - filter_word: remove '@' and select English words
-  #    - remove_stop_words
+  #    - filter_word: remove '@' and select alpha-only words
+  #    - filter_stop_word: remove stop words and words of length < 3
 
   def filter_tweet(tweets)
     total_words = []
 
     tweets.each do |tweet|
       if filter_word(tweet) != nil
-        f_words = filter_word(tweet)
-        f_words.each do |word|
-          total_words << word.downcase
+        eng_words = filter_word(tweet)
+        filtered = filter_stop_word(eng_words)
+        filtered.each do |word|
+          total_words << word
         end
       end
     end
@@ -62,17 +65,23 @@ class Tweet < ActiveRecord::Base
     text.gsub!(/[@]/, "")
 
     # select English word only
-    words = text.split(" ").select!{|v| v =~ /^[a-zA-Z]*$/}
+    filtered = text.split(" ").select!{|v| v =~ /^[a-zA-Z]*$/}
 
-    return words
+    return filtered
   end
 
 
-  def remove_stop_words
+  def filter_stop_word(words)
+    filtered = []
+    words.each do |word|
+      word.downcase!
+      filtered << word unless (STOP_WORDS_LIST.include?(word) || word.length < 3)
+    end
+    return filtered
   end
 
 
-  #and, the, me, this, that, these, a, an, you, he, she, they, them, are, is, him, his, her, their, them, its, it, mine, us, my, your, theirs, yours, at, in, to, from, on
+
 
   # stream
   # count 10 most frequest
