@@ -12,7 +12,9 @@ class TweetsController < ApplicationController
     # hash
     #  - key: tweet word
     #  - value: frequency of word
+
     @store = tweet_client.store
+    @popular = tweet_client.popular
   end
 
 end

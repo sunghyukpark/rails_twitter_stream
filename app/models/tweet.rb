@@ -1,16 +1,17 @@
 require 'tweetstream'
 
 class Tweet < ActiveRecord::Base
-  attr_accessor :store
+  attr_accessor :store, :popular
 
-  STOP_WORDS_LIST = ["i", "and", "the", "me", "this", "that", "these", "a", "an", "you", "he", "she", "they", "them", "are", "is", "him", "his", "her", "their", "them", "its", "it", "mine", "our", "us", "my", "your", "theirs", "yours","be","been","being","have", "at", "in", "to","but","else","would","should","could", "from","who","when", "where", "why", "what","with","how","some","gonna", "on", "will","than","un", "rt", "en","la", "los","las", "de" ,"del", "una", "con", "que"]
+  STOP_WORDS_LIST = ["i", "and", "the", "me", "this", "that", "these", "a", "an", "you", "he", "she", "they", "them", "are", "is", "him", "his", "her", "their", "them", "its", "it", "mine", "our", "us", "my", "your", "theirs", "yours","be","been","being","have", "at", "in", "to","for","but","else","would","should","could", "from","who","when", "where", "why", "what","with","how","some","gonna", "on", "will","than","un", "just","not", "rt", "en","la", "los","las", "de" ,"del", "una", "con", "que", "para", "por", "como"]
 
   # initialize
   # @store -> hash to save filtered word and its frequency
   # request token configuration
 
-  def initialize(popular)
+  def initialize
     @store = Hash.new(0)
+    @popular = Hash.new
 
     TweetStream.configure do |config|
       config.consumer_key       = ENV['CONSUMER_KEY']
@@ -23,6 +24,10 @@ class Tweet < ActiveRecord::Base
 
 
   # makes stream request and get tweet objects
+  #  - once 5 min steaming is done
+  #     - client.stop
+  #     - filter tweet and store all words in @store
+  #     - store popular words and its freq in @popular
 
   def make_stream_request(min)
     statuses = []
@@ -32,6 +37,7 @@ class Tweet < ActiveRecord::Base
       EM::PeriodicTimer.new(60*min) do
         client.stop
         filter_tweet_and_store_words(statuses)
+        pick_popular_words
       end
 
       client.sample do |status, client|
@@ -44,6 +50,7 @@ class Tweet < ActiveRecord::Base
   # filter tweet and store words
   #    - filter_word: remove '@' and select alpha-only words
   #    - filter_stop_word: remove stop words and words of length < 3
+
 
   def filter_tweet_and_store_words(tweets)
     total_words = []
@@ -91,6 +98,13 @@ class Tweet < ActiveRecord::Base
   end
 
   def pick_popular_words
+    nested_popular = @store.sort_by{|key, value| -value}.first(10)
+    nested_popular.each do |popular|
+      word = popular[0]
+      freq = popular[1]
+
+      @popular[word] = freq
+    end
   end
 
 
