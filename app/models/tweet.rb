@@ -3,13 +3,13 @@ require 'tweetstream'
 class Tweet < ActiveRecord::Base
   attr_accessor :store
 
-  STOP_WORDS_LIST = ["i", "and", "the", "me", "this", "that", "these", "a", "an", "you", "he", "she", "they", "them", "are", "is", "him", "his", "her", "their", "them", "its", "it", "mine", "our", "us", "my", "your", "theirs", "yours", "at", "in", "to","but","else","would","should","could", "from","when", "where", "why", "what", "on", "will","than","un", "rt", "en","la", "los","las", "de" ,"del", "una", "con", "que"]
+  STOP_WORDS_LIST = ["i", "and", "the", "me", "this", "that", "these", "a", "an", "you", "he", "she", "they", "them", "are", "is", "him", "his", "her", "their", "them", "its", "it", "mine", "our", "us", "my", "your", "theirs", "yours","be","been","being","have", "at", "in", "to","but","else","would","should","could", "from","who","when", "where", "why", "what","with","how","some","gonna", "on", "will","than","un", "rt", "en","la", "los","las", "de" ,"del", "una", "con", "que"]
 
   # initialize
   # @store -> hash to save filtered word and its frequency
   # request token configuration
 
-  def initialize
+  def initialize(popular)
     @store = Hash.new(0)
 
     TweetStream.configure do |config|
@@ -24,14 +24,20 @@ class Tweet < ActiveRecord::Base
 
   # makes stream request and get tweet objects
 
-  def make_stream_request
-    client = TweetStream::Client.new
+  def make_stream_request(min)
     statuses = []
-    client.sample do |status, client|
-      statuses << status
-      client.stop if statuses.size >= 200
+    client = TweetStream::Client.new
+
+    EM.run do
+      EM::PeriodicTimer.new(60*min) do
+        client.stop
+        filter_tweet_and_store_words(statuses)
+      end
+
+      client.sample do |status, client|
+        statuses << status
+      end
     end
-    return statuses
   end
 
 
@@ -55,12 +61,6 @@ class Tweet < ActiveRecord::Base
     return total_words
   end
 
-
-  # collect words and store frequency
-
-  def store_word_freq(word)
-    @store[word] += 1
-  end
 
 
   private
@@ -86,12 +86,12 @@ class Tweet < ActiveRecord::Base
     return filtered
   end
 
+  def store_word_freq(word)
+    @store[word] += 1
+  end
 
+  def pick_popular_words
+  end
 
-
-  # stream
-  # count 10 most frequest
-  # track frequency of each
-  # make instances of tweat
 
 end
