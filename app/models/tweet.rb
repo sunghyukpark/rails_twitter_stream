@@ -1,12 +1,17 @@
 require 'tweetstream'
 
 class Tweet < ActiveRecord::Base
+  attr_accessor :store
 
-  STOP_WORDS_LIST = ["i", "and", "the", "me", "this", "that", "these", "a", "an", "you", "he", "she", "they", "them", "are", "is", "him", "his", "her", "their", "them", "its", "it", "mine", "our", "us", "my", "your", "theirs", "yours", "at", "in", "to", "from","when", "where", "why", "what", "on", "will","than","un", "rt", "en","la", "los","las", "de" ,"del", "una", "con", "que"]
+  STOP_WORDS_LIST = ["i", "and", "the", "me", "this", "that", "these", "a", "an", "you", "he", "she", "they", "them", "are", "is", "him", "his", "her", "their", "them", "its", "it", "mine", "our", "us", "my", "your", "theirs", "yours", "at", "in", "to","but","else","would","should","could", "from","when", "where", "why", "what", "on", "will","than","un", "rt", "en","la", "los","las", "de" ,"del", "una", "con", "que"]
 
-  # configure request tokens
+  # initialize
+  # @store -> hash to save filtered word and its frequency
+  # request token configuration
 
-  def configure
+  def initialize
+    @store = Hash.new(0)
+
     TweetStream.configure do |config|
       config.consumer_key       = ENV['CONSUMER_KEY']
       config.consumer_secret    = ENV['CONSUMER_SECRET']
@@ -20,21 +25,21 @@ class Tweet < ActiveRecord::Base
   # makes stream request and get tweet objects
 
   def make_stream_request
-    statuses = []
     client = TweetStream::Client.new
+    statuses = []
     client.sample do |status, client|
       statuses << status
-      client.stop if statuses.size >= 20
+      client.stop if statuses.size >= 200
     end
     return statuses
   end
 
 
-  # filter tweet
+  # filter tweet and store words
   #    - filter_word: remove '@' and select alpha-only words
   #    - filter_stop_word: remove stop words and words of length < 3
 
-  def filter_tweet(tweets)
+  def filter_tweet_and_store_words(tweets)
     total_words = []
 
     tweets.each do |tweet|
@@ -42,6 +47,7 @@ class Tweet < ActiveRecord::Base
         eng_words = filter_word(tweet)
         filtered = filter_stop_word(eng_words)
         filtered.each do |word|
+          store_word_freq(word)
           total_words << word
         end
       end
@@ -50,14 +56,14 @@ class Tweet < ActiveRecord::Base
   end
 
 
-  # collect words and keep track of frequency
-  def map_word
+  # collect words and store frequency
+
+  def store_word_freq(word)
+    @store[word] += 1
   end
 
 
-
   private
-
 
   def filter_word(tweet)
     # remove '@''
