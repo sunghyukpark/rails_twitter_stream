@@ -24,5 +24,6 @@ This app uses Twitter Streaming api and 'tweetstream' gem to get live tweets res
 
 
 <h3> What you can expect </h3>
+https://github.com/sunghyukpark/rails_twitter_stream/issues/1
 
 
