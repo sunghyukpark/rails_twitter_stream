@@ -13,7 +13,8 @@ This app uses Twitter Streaming api and 'tweetstream' gem to get live tweets res
 <h3> Improvements needed </h3>
 1. Takes too much time loading the results page. Live update and visualization of data would be great to implement.
 2. Refactoring
-3. Model, Controller renaming (implemented client for api so far. Tweet -> TweetClient)
+3. Model, Controller renaming (implemented client for api request not related to tweet itself. Tweet -> TweetClient)
+4. Test coverage 
 
 <h3> Gems </h3>
 1. dotenv-rails
