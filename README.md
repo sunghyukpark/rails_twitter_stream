@@ -1,7 +1,8 @@
-== README
+<h1>Rails Twitter Stream</h1>
 
-This README would normally document whatever steps are necessary to get the
-application up and running.
+<h3> Installation </h3>
+1. 'bundle install' 
+2. configure your
 
 Things you may want to cover:
 
