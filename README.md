@@ -21,6 +21,7 @@ This app uses Twitter Streaming api and 'tweetstream' gem to get live tweets res
 2. awesome-print
 3. tweetstream
 4. eventmachine
+5. pry-byebug (for dev, test only)
 
 
 <h3> What you can expect </h3>
