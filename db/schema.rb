@@ -11,11 +11,9 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 20160207000809) do
+ActiveRecord::Schema.define(version: 20160216040324) do
 
-  create_table "tweets", force: :cascade do |t|
-    t.string   "word"
-    t.integer  "frequency"
+  create_table "tweet_apis", force: :cascade do |t|
     t.datetime "created_at", null: false
     t.datetime "updated_at", null: false
   end
