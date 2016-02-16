@@ -11,10 +11,10 @@ This app uses Twitter Streaming api and 'tweetstream' gem to get live tweets res
 5. Note - the app is set to receive 1 min of streamed tweet results. If you want to change default min, go to /app/controllers/tweets_controller.rb and change min number in make_stream_request method. If streaming stops suddenly, the app would display saved results so far(tweet words saved in instance variable of Tweet model -> @store, @popular). 
 
 <h3> Improvements needed </h3>
-1. Takes too much time loading the results page. Live update and visualization of data would be great to implement.
+1. Test Coverage.
 2. Refactoring
 3. Model, Controller renaming (implemented client for api request not related to tweet itself. Tweet -> TweetClient)
-4. Test coverage 
+4. Takes too much time loading the results page. Live update and visualization of data would be great to implement.
 
 <h3> Gems </h3>
 1. dotenv-rails
