@@ -48,13 +48,13 @@ class Tweet < ActiveRecord::Base
   private
 
   # filter tweet and store words
-  #    - filter_word: remove '@' and select alpha-only words
+  #    - filter_words: remove '@' and select alpha-only words
   #    - filter_stop_word: remove stop words and words of length < 3
   def filter_tweet_and_store_words(tweets)
     total_words = []
 
     tweets.each do |tweet|
-      if filter_word(tweet) != nil
+      if filter_words(tweet) != nil
         eng_filtered = filter_words(tweet)
         stop_filtered = filter_stop_words(eng_filtered)
         stop_filtered.each do |word|
