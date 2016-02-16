@@ -89,12 +89,11 @@ class Tweet < ActiveRecord::Base
   end
 
   def pick_popular_words
+    # pwords - array of array [[word, freq]]
     pwords = @store.sort_by{|key, value| -value}.first(10)
-    binding.pry
     pwords.each do |popular|
       word = popular[0]
       freq = popular[1]
-
       @popular[word] = freq
     end
   end
