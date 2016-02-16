@@ -13,10 +13,10 @@ gem 'tweetstream'
 gem 'eventmachine', '~> 1.0', '>= 1.0.9.1'
 
 
-
 group :development, :test do
   gem 'byebug'
   gem 'dotenv-rails'
+  gem 'rspec-rails', '~> 3.0'
 end
 
 group :development do

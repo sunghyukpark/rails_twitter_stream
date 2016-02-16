@@ -93,9 +93,11 @@ class Tweet < ActiveRecord::Base
     return filtered
   end
 
+
   def store_word_freq(word)
     @store[word] += 1
   end
+
 
   def pick_popular_words
     nested_popular = @store.sort_by{|key, value| -value}.first(10)
