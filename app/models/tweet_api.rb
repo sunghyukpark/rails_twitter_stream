@@ -44,9 +44,6 @@ class TweetApi < ActiveRecord::Base
     end
   end
 
-
-  private
-
   # filter tweet and store words
   #    - filter_words: remove '@' and select alpha-only words
   #    - filter_stop_word: remove stop words and words of length < 3
