@@ -7,12 +7,11 @@ class TweetsController < ApplicationController
     tweet_client = Tweet.new
 
     # make request, filter tweets
-    tweet_client.make_stream_request(1)
+    tweet_client.make_stream_request(0.5)
 
     # hash
     #  - key: tweet word
     #  - value: frequency of word
-
     @store = tweet_client.store
     @popular = tweet_client.popular
   end
